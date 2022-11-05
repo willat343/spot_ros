@@ -1347,7 +1347,7 @@ class SpotWrapper:
 
         return True, "Opened gripper successfully"
 
-    def hand_pose(self, pose_points):
+    def hand_pose(self, pose_points, seconds=5):
         try:
             success, msg = self.ensure_arm_power_and_stand()
             if not success:
@@ -1362,7 +1362,7 @@ class SpotWrapper:
                     z=pose_points.position.z,
                 )
 
-                # # Rotation as a quaternion.
+                # Rotation as a quaternion.
                 rotation = geometry_pb2.Quaternion(
                     w=pose_points.orientation.w,
                     x=pose_points.orientation.x,
@@ -1370,7 +1370,6 @@ class SpotWrapper:
                     z=pose_points.orientation.z,
                 )
 
-                seconds = 5.0
                 duration = seconds_to_duration(seconds)
 
                 # Build the SE(3) pose of the desired hand position in the moving body frame.

@@ -1190,7 +1190,8 @@ class SpotROS:
 
     def handle_hand_pose(self, srv_data: HandPoseRequest):
         """ROS service to give a position to the gripper"""
-        resp = self.spot_wrapper.hand_pose(pose_points=srv_data.pose_point)
+        seconds = srv_data.seconds if srv_data.seconds > 0.0 else 5.0
+        resp = self.spot_wrapper.hand_pose(pose_points=srv_data.pose_point, seconds=seconds)
         return HandPoseResponse(resp[0], resp[1])
 
     ##################################################################
