@@ -1411,7 +1411,7 @@ class SpotWrapper:
                 time.sleep(6.0)
 
         except Exception as e:
-            return False, "An error occured while trying to move arm"
+            return False, "An error occured while trying to move arm: " + str(e)
 
         return True, "Moved arm successfully"
 
