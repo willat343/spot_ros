@@ -766,9 +766,10 @@ class SpotROS:
             return
 
         try:
-            self._send_trajectory_command(
+            success, message = self._send_trajectory_command(
                 self._transform_pose_to_body_frame(msg), rospy.Duration(5)
             )
+            rospy.loginfo("Trajectory command success = {}, message = {}".format(success, message))
         except tf2_ros.LookupException as e:
             rospy.logerr(str(e))
 

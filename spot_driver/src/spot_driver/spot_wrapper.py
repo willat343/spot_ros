@@ -907,7 +907,8 @@ class SpotWrapper:
         self._near_goal = False
         self._trajectory_status_unknown = False
         self._last_trajectory_command_precise = precise_position
-        self._logger.info("got command duration of {}".format(cmd_duration))
+        self._logger.info("Got trajectory command (duration = {}, frame = {}):\n\tgoal_x: {}\n\tgoal_y: {}\n\tgoal_heading: {}".format(\
+            cmd_duration, frame_name, goal_x, goal_y, goal_heading))
         end_time = time.time() + cmd_duration
         if frame_name == "vision":
             vision_tform_body = frame_helpers.get_vision_tform_body(
@@ -1399,20 +1400,14 @@ class SpotWrapper:
                     synchronized_command=synchronized_command
                 )
 
-                command = self._robot_command(
+                # Send the request
+                success, response_str, _ = self._robot_command(
                     RobotCommandBuilder.build_synchro_command(robot_command)
                 )
-
-                # Send the request
-                self._robot_command_client.robot_command(command)
                 self._logger.info("Moving arm to position.")
-
-                time.sleep(6.0)
-
+                return success, response_str
         except Exception as e:
             return False, "An error occured while trying to move arm: " + str(e)
-
-        return True, "Moved arm successfully"
 
     ###################################################################
 
