@@ -955,7 +955,7 @@ class SpotROS:
             rospy.logerr("cmd_vel received a message but motion is not allowed.")
             return
 
-        self.spot_wrapper.velocity_cmd(data.linear.x, data.linear.y, data.angular.z)
+        self.spot_wrapper.velocity_cmd(data.linear.x, data.linear.y, data.angular.z, 0.5)
 
     def in_motion_or_idle_pose_cb(self, data):
         """
