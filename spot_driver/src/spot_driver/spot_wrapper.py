@@ -247,20 +247,28 @@ class AsyncIdle(AsyncPeriodicQuery):
                 status = (
                     response.feedback.synchronized_feedback.mobility_command_feedback.se2_trajectory_feedback.status
                 )
+                body_movement_status = (
+                    response.feedback.synchronized_feedback.mobility_command_feedback.se2_trajectory_feedback.body_movement_status
+                )
                 # STATUS_AT_GOAL always means that the robot reached the goal. If the trajectory command did not
                 # request precise positioning, then STATUS_NEAR_GOAL also counts as reaching the goal
+                # Body movement should be BODY_STATUS_SETTLED
                 if (
-                    status
+                    (status
                     == basic_command_pb2.SE2TrajectoryCommand.Feedback.STATUS_AT_GOAL
                     or (
                         status
                         == basic_command_pb2.SE2TrajectoryCommand.Feedback.STATUS_NEAR_GOAL
                         and not self._spot_wrapper._last_trajectory_command_precise
-                    )
+                    ))
                 ):
-                    self._spot_wrapper._at_goal = True
-                    # Clear the command once at the goal
-                    self._spot_wrapper._last_trajectory_command = None
+                    if body_movement_status \
+                            == basic_command_pb2.SE2TrajectoryCommand.Feedback.BODY_STATUS_SETTLED:
+                        self._spot_wrapper._at_goal = True
+                        # Clear the command once at the goal
+                        self._spot_wrapper._last_trajectory_command = None
+                    else:
+                        is_moving = True
                 elif (
                     status
                     == basic_command_pb2.SE2TrajectoryCommand.Feedback.STATUS_GOING_TO_GOAL
